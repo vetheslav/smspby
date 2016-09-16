@@ -3,7 +3,8 @@
   "description": "Библиотека для рассылки смс сообщений через smsp.by",
   "keywords": ["sms", "смс", "отправка", "рассылка", "smsp.by", "смс.бел", "api"],
   "type": "Library",
-  "version": "0.0.1",
+  "version": "0.0.2",
+  "license": "MIT",
   "authors": [
     {
       "name": "Slava Shahoyko",
