@@ -2,7 +2,6 @@
 namespace vetheslav\smspby;
 
 use GuzzleHttp\Client;
-use GuzzleHttp;
 
 /**
  * Общий класс для рассылки смс
