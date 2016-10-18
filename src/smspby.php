@@ -181,19 +181,23 @@ class smspby
 
         $groups_list = implode(',', $groups_list);
 
+        $params = [
+            'phone' => $phone,
+            'first_name' => $first_name,
+            'last_name' => $last_name,
+            'middle_name' => $middle_name,
+            'gender' => $gender,
+            'description' => $description,
+            'param1' => $param1,
+            'param2' => $param2,
+            'groups_list' => $groups_list
+        ];
+        if ($birth_date != '') {
+            $params['birth_date'] = $birth_date;
+        }
+
         $res = $this->getRequest(
-            'contact_create', [
-                                'phone' => $phone,
-                                'first_name' => $first_name,
-                                'last_name' => $last_name,
-                                'middle_name' => $middle_name,
-                                'gender' => $gender,
-                                'birth_date' => $birth_date,
-                                'description' => $description,
-                                'param1' => $param1,
-                                'param2' => $param2,
-                                'groups_list' => $groups_list
-                            ]
+            'contact_create', $params
         );
         if ($res) {
             if ($res->status == 'error') {
@@ -254,8 +258,7 @@ class smspby
         $params['apikey'] = $this->apikey;
 
         $res = $client->post(
-            '',
-            ['form_params' => $params]
+            '', ['form_params' => $params]
         );
 
         if ($res->getStatusCode() == 200) {
