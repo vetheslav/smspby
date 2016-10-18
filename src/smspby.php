@@ -19,6 +19,7 @@ class smspby
 
     /**
      * smspby constructor.
+     *
      * @param string $user
      * @param string $apikey
      * @param string $sender
@@ -41,22 +42,26 @@ class smspby
         if ($res) {
             if ($res->status == 'error') {
                 $this->last_global_error_number = $res->error;
+
                 return false;
             } else {
                 return (float) $res->balance;
             }
         }
+
         return false;
     }
 
     /**
      * Отправка одиночного смс
-     * @param int $number
+     *
+     * @param int    $number
      * @param string $msg
-     * @param int $urgent Если 1, то срочное сообщение
+     * @param int    $urgent Если 1, то срочное сообщение
      * @param string $custom_id
      * @param string $sender
-     * @param int $test
+     * @param int    $test
+     *
      * @return bool|object
      */
     public function sendSms($number, $msg, $urgent = 0, $custom_id = '', $sender = '', $test = 0)
@@ -79,16 +84,19 @@ class smspby
         if ($res) {
             if ($res->status == 'error') {
                 $this->last_global_error_number = $res->error;
+
                 return false;
             } else {
                 return $res;
             }
         }
+
         return false;
     }
 
     /**
      * @param array $messages
+     *
      * @return bool|object
      */
     public function sendSmsBulk($messages)
@@ -97,17 +105,21 @@ class smspby
         if ($res) {
             if ($res->status == 'error') {
                 $this->last_global_error_number = $res->error;
+
                 return false;
             } else {
                 return $res;
             }
         }
+
         return false;
     }
 
     /**
      * Проверка статуса сообщений
+     *
      * @param string $sms_id
+     *
      * @return bool|object
      */
     public function getSmsStatus($sms_id)
@@ -116,19 +128,121 @@ class smspby
         if ($res) {
             if ($res->status == 'error') {
                 $this->last_global_error_number = $res->error;
+
                 return false;
             } else {
                 return $res;
             }
         }
+
         return false;
     }
+
+    ###################################################################
+    ###########################          ##############################
+    ########################### Контакты ##############################
+    ###########################          ##############################
+    ###################################################################
+
+    /**
+     * Создание контакта
+     * Возвращает id контакта, если создан успешно. Иначе false
+     *
+     * @param int    $phone
+     * @param string $first_name
+     * @param string $last_name
+     * @param string $middle_name
+     * @param array  $groups_list
+     * @param string $gender
+     * @param string $birth_date
+     * @param string $description
+     * @param string $param1
+     * @param string $param2
+     *
+     * @return bool|int
+     */
+    public function createContact(
+        $phone,
+        $first_name = '',
+        $last_name = '',
+        $middle_name = '',
+        $groups_list = [],
+        $gender = 'N',
+        $birth_date = '',
+        $description = '',
+        $param1 = '',
+        $param2 = ''
+    ) {
+        if (!in_array($gender, ['N', 'M', 'F'])) {
+            $this->last_global_error_number = 'Введен не корректный gender. Должен быть N(null), M(мужской), F(жеский)';
+
+            return false;
+        }
+
+        $groups_list = implode(',', $groups_list);
+
+        $res = $this->getRequest(
+            'contact_create', [
+                                'phone' => $phone,
+                                'first_name' => $first_name,
+                                'last_name' => $last_name,
+                                'middle_name' => $middle_name,
+                                'gender' => $gender,
+                                'birth_date' => $birth_date,
+                                'description' => $description,
+                                'param1' => $param1,
+                                'param2' => $param2,
+                                'groups_list' => $groups_list
+                            ]
+        );
+        if ($res) {
+            if ($res->status == 'error') {
+                $this->last_global_error_number = $res->error;
+
+                return false;
+            } else {
+                return $res->id;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Удаление контакта
+     * Возвращает id контакта, если создан успешно. Иначе false
+     *
+     * @param int $contact_id
+     *
+     * @return bool|int
+     */
+    public function deleteContact($contact_id)
+    {
+        $res = $this->getRequest('contact_delete', ['id' => $contact_id]);
+        if ($res) {
+            if ($res->status == 'error') {
+                $this->last_global_error_number = $res->error;
+
+                return false;
+            } else {
+                return $res->id;
+            }
+        }
+
+        return false;
+    }
+
+    ###################################################################
+    ###########################          ##############################
+    ########################### Системные #############################
+    ###########################          ##############################
+    ###################################################################
 
     /**
      * Функция для получения данных с сервера
      *
      * @param string $cmd
-     * @param array $params
+     * @param array  $params
      *
      * @return object|bool
      */
@@ -146,8 +260,10 @@ class smspby
 
         if ($res->getStatusCode() == 200) {
             $data = json_decode($res->getBody());
+
             return $data;
         }
+
         return false;
     }
 
@@ -191,6 +307,7 @@ class smspby
      * Перевод статуса смс
      *
      * @param $status
+     *
      * @return string
      */
     static public function statusTranslate($status)
