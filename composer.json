@@ -1,9 +1,16 @@
 {
   "name": "vetheslav/smspby",
   "description": "Библиотека для рассылки смс сообщений через smsp.by",
-  "keywords": ["sms", "смс", "отправка", "рассылка", "smsp.by", "смс.бел", "api"],
-  "type": "Library",
-  "version": "0.0.5",
+  "keywords": [
+    "sms",
+    "смс",
+    "отправка",
+    "рассылка",
+    "smsp.by",
+    "смс.бел",
+    "api"
+  ],
+  "type": "library",
   "license": "MIT",
   "authors": [
     {
@@ -13,7 +20,7 @@
   ],
   "require": {
     "php": ">=5.6.19",
-    "guzzlehttp/guzzle": "6.*"
+    "guzzlehttp/guzzle": "7.*"
   },
   "autoload": {
     "psr-4": {
