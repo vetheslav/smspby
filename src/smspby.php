@@ -12,7 +12,7 @@ class smspby
     private $user;
     private $apikey;
     private $sender;
-    public $service = 'https://cp.smsp.by';
+    public $service = 'https://cabinet.smsp.by/api/';
     private $last_global_error_number;
 
     const IS_URGENT = 1;
