@@ -17,7 +17,7 @@ $ composer require vetheslav/smspby
 или добавить
 
 ```json
-"vetheslav/smspby": "0.0.*"
+"vetheslav/smspby": "1.0.*"
 ```
 
 в секцию `require` файла composer.json.
