@@ -1,4 +1,4 @@
-.PHONY: test stan
+.PHONY: test
 
 test:
 	vendor/bin/phpunit
