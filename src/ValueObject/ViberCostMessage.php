@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Vetheslav\SmspBy\ValueObject;
 
-final class ViberCostMessage
+final readonly class ViberCostMessage
 {
     /**
      * Creates a typed Viber cost request with validation.
      */
     public function __construct(
-        private readonly string $msisdn,
-        private readonly ViberMessageType $type,
+        private string           $msisdn,
+        private ViberMessageType $viberMessageType,
     ) {
         if ($this->msisdn === '') {
             throw new \InvalidArgumentException('msisdn must be a non-empty string.');
@@ -20,12 +20,13 @@ final class ViberCostMessage
 
     /**
      * Builds the payload for cost/viber and costBulk/viber.
+     * @return array<string|int>
      */
     public function toArray(): array
     {
         return [
             'msisdn' => $this->msisdn,
-            'type' => $this->type->value,
+            'type' => $this->viberMessageType->value,
         ];
     }
 }

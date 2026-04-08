@@ -15,11 +15,11 @@ final class TemplateListResponse extends AbstractResponse
      */
     public function __construct(
         bool $success,
-        ?ApiError $error,
+        ?ApiError $apiError,
         array $raw,
         private readonly array $templates,
     ) {
-        parent::__construct($success, $error, $raw);
+        parent::__construct($success, $apiError, $raw);
     }
 
     /**
@@ -32,14 +32,19 @@ final class TemplateListResponse extends AbstractResponse
 
         $rawTemplates = $data['teamplates'] ?? $data['templates'] ?? [];
         $templates = [];
-        foreach ($rawTemplates as $template) {
-            if (!\is_array($template) || !isset($template['template_id'], $template['name'], $template['text'])) {
+        foreach ($rawTemplates as $rawTemplate) {
+            if (!\is_array($rawTemplate)) {
                 continue;
             }
+
+            if (!isset($rawTemplate['template_id'], $rawTemplate['name'], $rawTemplate['text'])) {
+                continue;
+            }
+
             $templates[] = new Template(
-                (int) $template['template_id'],
-                (string) $template['name'],
-                (string) $template['text'],
+                (int) $rawTemplate['template_id'],
+                (string) $rawTemplate['name'],
+                (string) $rawTemplate['text'],
             );
         }
 

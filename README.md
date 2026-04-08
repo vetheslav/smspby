@@ -10,8 +10,8 @@ Full API reference: `https://smsp.by/integrations/api`
 
 ## Requirements
 
-- PHP >= 8.2
-- Symfony 7.x
+- PHP >= 8.4
+- Symfony 8.x
 
 ## Installation
 

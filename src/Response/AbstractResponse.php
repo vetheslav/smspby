@@ -13,7 +13,7 @@ abstract class AbstractResponse
      */
     public function __construct(
         private readonly bool $success,
-        private readonly ?ApiError $error,
+        private readonly ?ApiError $apiError,
         private readonly array $raw,
     ) {
     }
@@ -31,7 +31,7 @@ abstract class AbstractResponse
      */
     public function error(): ?ApiError
     {
-        return $this->error;
+        return $this->apiError;
     }
 
     /**

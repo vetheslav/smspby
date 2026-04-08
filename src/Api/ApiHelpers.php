@@ -15,6 +15,7 @@ final class ApiHelpers
         if ($items === []) {
             throw new \InvalidArgumentException('Batch list must not be empty.');
         }
+        
         if (count($items) > $limit) {
             throw new \InvalidArgumentException('Batch list exceeds the maximum size of '.$limit.'.');
         }
@@ -34,6 +35,7 @@ final class ApiHelpers
             if ($id === '') {
                 continue;
             }
+            
             $clean[] = $id;
         }
 

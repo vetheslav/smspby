@@ -1,0 +1,50 @@
+# --------------------------
+# Exclude dev files from dist
+# --------------------------
+
+/.github export-ignore
+/docker export-ignore
+/docs export-ignore
+/tests export-ignore
+
+.gitignore export-ignore
+.gitattributes export-ignore
+.editorconfig export-ignore
+
+phpstan.neon export-ignore
+pint.json export-ignore
+rector.php export-ignore
+Taskfile.yml export-ignore
+Makefile.yml export-ignore
+compose.dev.yaml export-ignore
+CONTRIBUTING.md export-ignore
+composer.lock export-ignore
+
+# --------------------------
+# Line endings
+# --------------------------
+
+* text=auto eol=lf
+
+# --------------------------
+# Binary files
+# --------------------------
+
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+
+# SVG is text
+*.svg text
+
+# --------------------------
+# Language handling
+# --------------------------
+
+*.php text diff=php
+*.json text
+*.md text
+*.yml text
+*.yaml text

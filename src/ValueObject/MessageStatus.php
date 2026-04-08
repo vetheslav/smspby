@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Vetheslav\SmspBy\ValueObject;
 
-final class MessageStatus
+final readonly class MessageStatus
 {
     /**
      * Creates a delivery status wrapper for SMS/Viber.
      */
     public function __construct(
-        private readonly MessageChannel $channel,
-        private readonly GatewayStatus $gatewayStatus,
+        private MessageChannel $messageChannel,
+        private GatewayStatus $gatewayStatus,
     ) {
     }
 
@@ -20,7 +20,7 @@ final class MessageStatus
      */
     public function code(): SmsMessageStatus|ViberMessageStatus|null
     {
-        return match ($this->channel) {
+        return match ($this->messageChannel) {
             MessageChannel::Sms => $this->gatewayStatus->mapToSmsMessageStatus(),
             MessageChannel::Viber => $this->gatewayStatus->mapToViberMessageStatus(),
         };

@@ -8,12 +8,12 @@ use Vetheslav\SmspBy\Http\RequestSender;
 use Vetheslav\SmspBy\Response\BalanceResponse;
 use Vetheslav\SmspBy\Response\SenderNamesResponse;
 
-final class UserApi
+final readonly class UserApi
 {
     /**
      * Creates a user API wrapper using the shared request sender.
      */
-    public function __construct(private readonly RequestSender $sender)
+    public function __construct(private RequestSender $requestSender)
     {
     }
 
@@ -22,7 +22,7 @@ final class UserApi
      */
     public function balances(): BalanceResponse
     {
-        $data = $this->sender->get('balances', []);
+        $data = $this->requestSender->get('balances', []);
 
         return BalanceResponse::fromArray($data);
     }
@@ -32,7 +32,7 @@ final class UserApi
      */
     public function senderNames(): SenderNamesResponse
     {
-        $data = $this->sender->get('senderNames', []);
+        $data = $this->requestSender->get('senderNames', []);
 
         return SenderNamesResponse::fromArray($data);
     }

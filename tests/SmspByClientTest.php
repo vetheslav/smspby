@@ -18,8 +18,8 @@ final class SmspByClientTest extends TestCase
     public function testSendSmsBuildsFormPayload(): void
     {
         $captured = [];
-        $mock = new MockHttpClient(function (string $method, string $url, array $options) use (&$captured): MockResponse {
-            $captured = compact('method', 'url', 'options');
+        $mockHttpClient = new MockHttpClient(function (string $method, string $url, array $options) use (&$captured): MockResponse {
+            $captured = ['method' => $method, 'url' => $url, 'options' => $options];
 
             return new MockResponse(json_encode([
                 'status' => true,
@@ -30,19 +30,19 @@ final class SmspByClientTest extends TestCase
             ], JSON_UNESCAPED_UNICODE));
         });
 
-        $client = new SmspByClient($mock, new Credentials('user', 'key'));
+        $smspByClient = new SmspByClient($mockHttpClient, new Credentials('user', 'key'));
 
-        $response = $client->sms()->send(new SmsMessage(
+        $smsSendResponse = $smspByClient->sms()->send(new SmsMessage(
             msisdn: '375291234567',
             text: 'Test',
             sender: 'MySender',
         ));
 
-        $this->assertTrue($response->isSuccess());
+        $this->assertTrue($smsSendResponse->isSuccess());
         $this->assertSame('POST', $captured['method']);
         $this->assertSame('https://cabinet.smsp.by/api/send/sms', $captured['url']);
 
-        parse_str($captured['options']['body'], $payload);
+        parse_str((string) $captured['options']['body'], $payload);
         $this->assertSame('user', $payload['user']);
         $this->assertSame('key', $payload['apikey']);
         $this->assertSame('375291234567', $payload['msisdn']);
@@ -53,8 +53,8 @@ final class SmspByClientTest extends TestCase
     public function testBulkSmsCostEncodesMessages(): void
     {
         $captured = [];
-        $mock = new MockHttpClient(function (string $method, string $url, array $options) use (&$captured): MockResponse {
-            $captured = compact('method', 'url', 'options');
+        $mockHttpClient = new MockHttpClient(function (string $method, string $url, array $options) use (&$captured): MockResponse {
+            $captured = ['method' => $method, 'url' => $url, 'options' => $options];
 
             return new MockResponse(json_encode([
                 'status' => true,
@@ -65,8 +65,8 @@ final class SmspByClientTest extends TestCase
             ], JSON_UNESCAPED_UNICODE));
         });
 
-        $client = new SmspByClient($mock, new Credentials('user', 'key'));
-        $client->sms()->costBulk([
+        $smspByClient = new SmspByClient($mockHttpClient, new Credentials('user', 'key'));
+        $smspByClient->sms()->costBulk([
             new SmsCostMessage('1', 'text 1'),
             new SmsCostMessage('2', 'text 2'),
         ]);
@@ -74,7 +74,7 @@ final class SmspByClientTest extends TestCase
         $this->assertSame('POST', $captured['method']);
         $this->assertSame('https://cabinet.smsp.by/api/costBulk/sms', $captured['url']);
 
-        parse_str($captured['options']['body'], $payload);
+        parse_str((string) $captured['options']['body'], $payload);
         $this->assertSame('user', $payload['user']);
         $this->assertSame('key', $payload['apikey']);
         $this->assertArrayHasKey('messages', $payload);
@@ -86,8 +86,8 @@ final class SmspByClientTest extends TestCase
     public function testViberMessagePrefersCallbackOverUrl(): void
     {
         $captured = [];
-        $mock = new MockHttpClient(function (string $method, string $url, array $options) use (&$captured): MockResponse {
-            $captured = compact('method', 'url', 'options');
+        $mockHttpClient = new MockHttpClient(function (string $method, string $url, array $options) use (&$captured): MockResponse {
+            $captured = ['method' => $method, 'url' => $url, 'options' => $options];
 
             return new MockResponse(json_encode([
                 'status' => true,
@@ -96,15 +96,15 @@ final class SmspByClientTest extends TestCase
             ], JSON_UNESCAPED_UNICODE));
         });
 
-        $client = new SmspByClient($mock, new Credentials('user', 'key'));
-        $client->viber()->send(new ViberMessage(
+        $smspByClient = new SmspByClient($mockHttpClient, new Credentials('user', 'key'));
+        $smspByClient->viber()->send(new ViberMessage(
             msisdn: '375291234567',
             text: 'Hello',
             buttonUrl: 'https://example.com',
             buttonCallbackNumber: '375291111111',
         ));
 
-        parse_str($captured['options']['body'], $payload);
+        parse_str((string) $captured['options']['body'], $payload);
         $this->assertArrayHasKey('button_callback_number', $payload);
         $this->assertSame('375291111111', $payload['button_callback_number']);
         $this->assertArrayNotHasKey('button_url', $payload);

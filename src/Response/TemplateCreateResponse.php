@@ -13,11 +13,11 @@ final class TemplateCreateResponse extends AbstractResponse
      */
     public function __construct(
         bool $success,
-        ?ApiError $error,
+        ?ApiError $apiError,
         array $raw,
         private readonly ?int $templateId,
     ) {
-        parent::__construct($success, $error, $raw);
+        parent::__construct($success, $apiError, $raw);
     }
 
     /**

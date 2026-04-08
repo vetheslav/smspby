@@ -4,44 +4,50 @@ declare(strict_types=1);
 
 namespace Vetheslav\SmspBy\ValueObject;
 
-final class ViberMessage
+final readonly class ViberMessage
 {
     /**
      * Creates a typed Viber message request with validation.
      */
     public function __construct(
-        private readonly string $msisdn,
-        private readonly string $text,
-        private readonly ?string $sender = null,
-        private readonly ?string $customId = null,
-        private readonly ?\DateTimeInterface $sendOn = null,
-        private readonly bool $useShortLinks = false,
-        private readonly ?int $dlrTimeout = null,
-        private readonly ?string $imageUrl = null,
-        private readonly ?string $buttonUrl = null,
-        private readonly ?string $buttonCallbackNumber = null,
-        private readonly ?string $buttonCaption = null,
-        private readonly ?string $smsText = null,
-        private readonly ?string $smsSender = null,
+        private string $msisdn,
+        private string $text,
+        private ?string $sender = null,
+        private ?string $customId = null,
+        private ?\DateTimeInterface $sendOn = null,
+        private bool $useShortLinks = false,
+        private ?int $dlrTimeout = null,
+        private ?string $imageUrl = null,
+        private ?string $buttonUrl = null,
+        private ?string $buttonCallbackNumber = null,
+        private ?string $buttonCaption = null,
+        private ?string $smsText = null,
+        private ?string $smsSender = null,
     ) {
         if ($this->msisdn === '') {
             throw new \InvalidArgumentException('msisdn must be a non-empty string.');
         }
+        
         if ($this->text === '' && $this->imageUrl === null) {
             throw new \InvalidArgumentException('text must be a non-empty string unless image_url is provided.');
         }
+        
         if ($this->text !== '' && mb_strlen($this->text) > 1000) {
             throw new \InvalidArgumentException('text must be 1000 characters or less.');
         }
+        
         if ($this->sender !== null && mb_strlen($this->sender) > 20) {
             throw new \InvalidArgumentException('Viber sender name must be 20 characters or less.');
         }
+        
         if ($this->customId !== null && mb_strlen($this->customId) > 20) {
             throw new \InvalidArgumentException('custom_id must be 20 characters or less.');
         }
+        
         if ($this->dlrTimeout !== null && ($this->dlrTimeout < 1 || $this->dlrTimeout > 1440)) {
             throw new \InvalidArgumentException('dlr_timeout must be between 1 and 1440 minutes.');
         }
+        
         if (($this->smsText !== null && $this->smsSender === null) || ($this->smsText === null && $this->smsSender !== null)) {
             throw new \InvalidArgumentException('sms_text and sms_sender must be provided together.');
         }
@@ -97,7 +103,7 @@ final class ViberMessage
             $data['custom_id'] = $this->customId;
         }
 
-        if ($this->sendOn !== null) {
+        if ($this->sendOn instanceof \DateTimeInterface) {
             $data['send_on_datetime'] = DateTimeFormatter::formatForApi($this->sendOn);
         }
 

@@ -15,11 +15,11 @@ final class ViberBulkSendResponse extends AbstractResponse
      */
     public function __construct(
         bool $success,
-        ?ApiError $error,
+        ?ApiError $apiError,
         array $raw,
         private readonly array $messages,
     ) {
-        parent::__construct($success, $error, $raw);
+        parent::__construct($success, $apiError, $raw);
     }
 
     /**
@@ -35,6 +35,7 @@ final class ViberBulkSendResponse extends AbstractResponse
             if (!\is_array($item)) {
                 continue;
             }
+            
             $messages[] = new ViberBulkSendItem(
                 isset($item['message_id']) ? (int) $item['message_id'] : null,
                 isset($item['price']) ? (float) $item['price'] : null,

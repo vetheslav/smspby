@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Vetheslav\SmspBy\Config;
 
-final class Credentials
+final readonly class Credentials
 {
     /**
      * Creates credentials for API authentication.
      */
     public function __construct(
-        private readonly string $user,
-        private readonly string $apiKey,
+        private string $user,
+        private string $apiKey,
     ) {
         if ($this->user === '' || $this->apiKey === '') {
             throw new \InvalidArgumentException('User and API key must be non-empty strings.');

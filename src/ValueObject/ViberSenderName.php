@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Vetheslav\SmspBy\ValueObject;
 
-final class ViberSenderName
+final readonly class ViberSenderName
 {
     /**
      * Creates a Viber sender name value object.
      * @param ViberTemplate[] $templates
      */
     public function __construct(
-        private readonly string $sender,
-        private readonly bool $isDefault,
-        private readonly array $templates,
+        private string $sender,
+        private bool $isDefault,
+        private array $templates,
     ) {
     }
 

@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Vetheslav\SmspBy\ValueObject;
 
-final class SmsCostItem
+final readonly class SmsCostItem
 {
     /**
      * Creates a cost item for an SMS message.
      */
     public function __construct(
-        private readonly string $msisdn,
-        private readonly ?float $pricePerPart,
-        private readonly ?int $parts,
-        private readonly ?float $amount,
+        private string $msisdn,
+        private ?float $pricePerPart,
+        private ?int $parts,
+        private ?float $amount,
     ) {
     }
 

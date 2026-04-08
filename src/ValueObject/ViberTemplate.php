@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Vetheslav\SmspBy\ValueObject;
 
-final class ViberTemplate
+final readonly class ViberTemplate
 {
     /**
      * Creates a Viber template value object.
      */
     public function __construct(
-        private readonly string $text,
-        private readonly bool $active,
+        private string $text,
+        private bool $active,
     ) {
     }
 

@@ -15,11 +15,11 @@ final class StatusResponse extends AbstractResponse
      */
     public function __construct(
         bool $success,
-        ?ApiError $error,
+        ?ApiError $apiError,
         array $raw,
         private readonly MessageStatus $messageStatus,
     ) {
-        parent::__construct($success, $error, $raw);
+        parent::__construct($success, $apiError, $raw);
     }
 
     /**
@@ -46,7 +46,7 @@ final class StatusResponse extends AbstractResponse
         return self::fromArrayForChannel($data, MessageChannel::Viber);
     }
 
-    private static function fromArrayForChannel(array $data, MessageChannel $channel): self
+    private static function fromArrayForChannel(array $data, MessageChannel $messageChannel): self
     {
         $success = ($data['status'] ?? true) !== false;
         $error = $success ? null : ApiError::fromMixed($data['error'] ?? null);
@@ -55,7 +55,7 @@ final class StatusResponse extends AbstractResponse
         $code = $statusData['code'] ?? null;
         $name = isset($statusData['name']) ? (string) $statusData['name'] : null;
 
-        $messageStatus = match ($channel) {
+        $messageStatus = match ($messageChannel) {
             MessageChannel::Viber => MessageStatus::fromViberCode($code, $name),
             MessageChannel::Sms => MessageStatus::fromSmsCode($code, $name),
         };

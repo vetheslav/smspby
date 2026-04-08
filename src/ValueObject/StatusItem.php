@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Vetheslav\SmspBy\ValueObject;
 
-final class StatusItem
+final readonly class StatusItem
 {
     /**
      * Creates a status item for bulk status responses.
      */
     public function __construct(
-        private readonly ?int $messageId,
-        private readonly ?string $customId,
-        private readonly MessageStatus $status,
+        private ?int $messageId,
+        private ?string $customId,
+        private MessageStatus $messageStatus,
     ) {
     }
 
@@ -37,6 +37,6 @@ final class StatusItem
      */
     public function status(): MessageStatus
     {
-        return $this->status;
+        return $this->messageStatus;
     }
 }

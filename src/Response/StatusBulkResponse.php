@@ -17,11 +17,11 @@ final class StatusBulkResponse extends AbstractResponse
      */
     public function __construct(
         bool $success,
-        ?ApiError $error,
+        ?ApiError $apiError,
         array $raw,
         private readonly array $items,
     ) {
-        parent::__construct($success, $error, $raw);
+        parent::__construct($success, $apiError, $raw);
     }
 
     /**
@@ -48,7 +48,7 @@ final class StatusBulkResponse extends AbstractResponse
         return self::fromArrayForChannel($data, MessageChannel::Viber);
     }
 
-    private static function fromArrayForChannel(array $data, MessageChannel $channel): self
+    private static function fromArrayForChannel(array $data, MessageChannel $messageChannel): self
     {
         $success = ($data['status'] ?? true) !== false;
         $error = $success ? null : ApiError::fromMixed($data['error'] ?? null);
@@ -59,21 +59,21 @@ final class StatusBulkResponse extends AbstractResponse
             $messagesStatus = [$messagesStatus];
         }
 
-        foreach ($messagesStatus as $item) {
-            if (!\is_array($item)) {
+        foreach ($messagesStatus as $messageStatus) {
+            if (!\is_array($messageStatus)) {
                 continue;
             }
 
             $messageId = null;
-            if (isset($item['message_id']) && $item['message_id'] !== false) {
-                $messageId = (int) $item['message_id'];
+            if (isset($messageStatus['message_id']) && $messageStatus['message_id'] !== false) {
+                $messageId = (int) $messageStatus['message_id'];
             }
 
-            $customId = isset($item['custom_id']) ? (string) $item['custom_id'] : null;
-            $name = isset($item['name']) ? (string) $item['name'] : null;
-            $code = $item['code'] ?? null;
+            $customId = isset($messageStatus['custom_id']) ? (string) $messageStatus['custom_id'] : null;
+            $name = isset($messageStatus['name']) ? (string) $messageStatus['name'] : null;
+            $code = $messageStatus['code'] ?? null;
 
-            $status = match ($channel) {
+            $status = match ($messageChannel) {
                 MessageChannel::Viber => MessageStatus::fromViberCode($code, $name),
                 MessageChannel::Sms => MessageStatus::fromSmsCode($code, $name),
             };

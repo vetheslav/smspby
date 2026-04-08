@@ -14,21 +14,21 @@ use Vetheslav\SmspBy\Response\ViberSendResponse;
 use Vetheslav\SmspBy\ValueObject\ViberCostMessage;
 use Vetheslav\SmspBy\ValueObject\ViberMessage;
 
-final class ViberApi
+final readonly class ViberApi
 {
     /**
      * Creates a Viber API wrapper using the shared request sender.
      */
-    public function __construct(private readonly RequestSender $sender)
+    public function __construct(private RequestSender $requestSender)
     {
     }
 
     /**
      * Sends a single Viber message and returns the delivery metadata.
      */
-    public function send(ViberMessage $message): ViberSendResponse
+    public function send(ViberMessage $viberMessage): ViberSendResponse
     {
-        $data = $this->sender->post('send/viber', $message->toArray());
+        $data = $this->requestSender->post('send/viber', $viberMessage->toArray());
 
         return ViberSendResponse::fromArray($data);
     }
@@ -44,10 +44,11 @@ final class ViberApi
             if (!$message instanceof ViberMessage) {
                 throw new \InvalidArgumentException('Each message must be an instance of ViberMessage.');
             }
+            
             $payload[] = $message->toArray();
         }
 
-        $data = $this->sender->post('sendBulk/viber', [
+        $data = $this->requestSender->post('sendBulk/viber', [
             'messages' => ApiHelpers::encodeMessages($payload),
         ]);
 
@@ -57,9 +58,9 @@ final class ViberApi
     /**
      * Calculates the cost of a single Viber message without sending it.
      */
-    public function cost(ViberCostMessage $message): ViberCostResponse
+    public function cost(ViberCostMessage $viberCostMessage): ViberCostResponse
     {
-        $data = $this->sender->post('cost/viber', $message->toArray());
+        $data = $this->requestSender->post('cost/viber', $viberCostMessage->toArray());
 
         return ViberCostResponse::fromArray($data);
     }
@@ -75,10 +76,11 @@ final class ViberApi
             if (!$message instanceof ViberCostMessage) {
                 throw new \InvalidArgumentException('Each message must be an instance of ViberCostMessage.');
             }
+            
             $payload[] = $message->toArray();
         }
 
-        $data = $this->sender->post('costBulk/viber', [
+        $data = $this->requestSender->post('costBulk/viber', [
             'messages' => ApiHelpers::encodeMessages($payload),
         ]);
 
@@ -90,7 +92,7 @@ final class ViberApi
      */
     public function statusById(int|string $messageId): StatusResponse
     {
-        $data = $this->sender->post('status/viber', [
+        $data = $this->requestSender->post('status/viber', [
             'message_id' => (string) $messageId,
         ]);
 
@@ -103,7 +105,7 @@ final class ViberApi
      */
     public function statusBulkById(array $messageIds): StatusBulkResponse
     {
-        $data = $this->sender->post('statusBulk/viber', [
+        $data = $this->requestSender->post('statusBulk/viber', [
             'message_ids' => ApiHelpers::joinIds($messageIds),
         ]);
 
@@ -117,7 +119,7 @@ final class ViberApi
     {
         $this->assertCustomId($customId);
 
-        $data = $this->sender->post('statusCustom/viber', [
+        $data = $this->requestSender->post('statusCustom/viber', [
             'custom_id' => $customId,
         ]);
 
@@ -134,7 +136,7 @@ final class ViberApi
             $this->assertCustomId((string) $customId);
         }
 
-        $data = $this->sender->post('statusCustomBulk/viber', [
+        $data = $this->requestSender->post('statusCustomBulk/viber', [
             'message_ids' => ApiHelpers::joinIds($customIds),
         ]);
 
@@ -146,6 +148,7 @@ final class ViberApi
         if ($customId === '') {
             throw new \InvalidArgumentException('custom_id must be a non-empty string.');
         }
+        
         if (mb_strlen($customId) > 20) {
             throw new \InvalidArgumentException('custom_id must be 20 characters or less.');
         }

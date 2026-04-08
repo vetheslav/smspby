@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Vetheslav\SmspBy\ValueObject;
 
-final class SmsSenderName
+final readonly class SmsSenderName
 {
     /**
      * Creates an SMS sender name value object.
      */
     public function __construct(
-        private readonly string $sender,
-        private readonly bool $isDefault,
+        private string $sender,
+        private bool $isDefault,
     ) {
     }
 

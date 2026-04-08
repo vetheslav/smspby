@@ -13,7 +13,7 @@ final class MessageStatusTest extends TestCase
 {
     public function testSmsStatusUsesEnum(): void
     {
-        $response = StatusResponse::fromSmsArray([
+        $statusResponse = StatusResponse::fromSmsArray([
             'status' => true,
             'message_status' => [
                 'code' => 3,
@@ -21,13 +21,13 @@ final class MessageStatusTest extends TestCase
             ],
         ]);
 
-        $status = $response->messageStatus();
-        $this->assertSame(SmsMessageStatus::Delivered, $status->code());
+        $messageStatus = $statusResponse->messageStatus();
+        $this->assertSame(SmsMessageStatus::Delivered, $messageStatus->code());
     }
 
     public function testViberStatusUsesEnum(): void
     {
-        $response = StatusResponse::fromViberArray([
+        $statusResponse = StatusResponse::fromViberArray([
             'status' => true,
             'message_status' => [
                 'code' => 5,
@@ -35,13 +35,13 @@ final class MessageStatusTest extends TestCase
             ],
         ]);
 
-        $status = $response->messageStatus();
-        $this->assertSame(ViberMessageStatus::Read, $status->code());
+        $messageStatus = $statusResponse->messageStatus();
+        $this->assertSame(ViberMessageStatus::Read, $messageStatus->code());
     }
 
     public function testStatusNotFoundIsPreserved(): void
     {
-        $response = StatusResponse::fromSmsArray([
+        $statusResponse = StatusResponse::fromSmsArray([
             'status' => true,
             'message_status' => [
                 'code' => false,
@@ -49,9 +49,9 @@ final class MessageStatusTest extends TestCase
             ],
         ]);
 
-        $status = $response->messageStatus();
-        $this->assertNull($status->code());
-        $this->assertTrue($status->isNotFound());
-        $this->assertSame(false, $status->gatewayStatus()->rawCode());
+        $messageStatus = $statusResponse->messageStatus();
+        $this->assertNull($messageStatus->code());
+        $this->assertTrue($messageStatus->isNotFound());
+        $this->assertSame(false, $messageStatus->gatewayStatus()->rawCode());
     }
 }

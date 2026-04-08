@@ -13,13 +13,13 @@ final class SmsMessageTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
 
-        $message = new SmsMessage(
+        $smsMessage = new SmsMessage(
             msisdn: '375291234567',
             text: 'Hello',
             useShortLinks: true,
         );
 
-        $message->toBulkArray();
+        $smsMessage->toBulkArray();
     }
 
     public function testRejectsLongSmsSender(): void

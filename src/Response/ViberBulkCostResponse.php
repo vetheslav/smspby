@@ -15,11 +15,11 @@ final class ViberBulkCostResponse extends AbstractResponse
      */
     public function __construct(
         bool $success,
-        ?ApiError $error,
+        ?ApiError $apiError,
         array $raw,
         private readonly array $messages,
     ) {
-        parent::__construct($success, $error, $raw);
+        parent::__construct($success, $apiError, $raw);
     }
 
     /**
@@ -32,9 +32,14 @@ final class ViberBulkCostResponse extends AbstractResponse
 
         $messages = [];
         foreach (($data['messages'] ?? []) as $item) {
-            if (!\is_array($item) || !isset($item['msisdn'])) {
+            if (!\is_array($item)) {
                 continue;
             }
+
+            if (!isset($item['msisdn'])) {
+                continue;
+            }
+
             $messages[] = new ViberCostItem(
                 (string) $item['msisdn'],
                 isset($item['price']) ? (float) $item['price'] : null,

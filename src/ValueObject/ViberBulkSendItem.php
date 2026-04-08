@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Vetheslav\SmspBy\ValueObject;
 
-final class ViberBulkSendItem
+final readonly class ViberBulkSendItem
 {
     /**
      * Creates a new instance.
      */
     public function __construct(
-        private readonly ?int $messageId,
-        private readonly ?float $price,
-        private readonly ?string $customId,
+        private ?int $messageId,
+        private ?float $price,
+        private ?string $customId,
     ) {
     }
 

@@ -22,13 +22,13 @@ final class ViberMessageTest extends TestCase
 
     public function testAllowsImageOnly(): void
     {
-        $message = new ViberMessage(
+        $viberMessage = new ViberMessage(
             msisdn: '375291234567',
             text: '',
             imageUrl: 'https://example.com/banner.png',
         );
 
-        $payload = $message->toArray();
+        $payload = $viberMessage->toArray();
         $this->assertSame('', $payload['text']);
         $this->assertSame('https://example.com/banner.png', $payload['image_url']);
     }

@@ -12,17 +12,17 @@ use Vetheslav\SmspBy\Config\Credentials;
 use Vetheslav\SmspBy\Exception\InvalidResponseException;
 use Vetheslav\SmspBy\Exception\TransportException;
 
-final class RequestSender
+final readonly class RequestSender
 {
-    private readonly LoggerInterface $logger;
+    private LoggerInterface $logger;
 
     /**
      * Creates the low-level API transport with credentials and base URL.
      */
     public function __construct(
-        private readonly HttpClientInterface $httpClient,
-        private readonly Credentials $credentials,
-        private readonly string $baseUri,
+        private HttpClientInterface $httpClient,
+        private Credentials $credentials,
+        private string $baseUri,
         ?LoggerInterface $logger = null,
     ) {
         $this->logger = $logger ?? new NullLogger();
@@ -70,9 +70,9 @@ final class RequestSender
 
         try {
             $response = $this->httpClient->request($method, $this->buildUrl($path), $options);
-        } catch (TransportExceptionInterface $exception) {
-            $this->logger->error('SMSp.by transport error', ['exception' => $exception]);
-            throw new TransportException('Transport error while calling SMSp.by API.', 0, $exception);
+        } catch (TransportExceptionInterface $transportException) {
+            $this->logger->error('SMSp.by transport error', ['exception' => $transportException]);
+            throw new TransportException('Transport error while calling SMSp.by API.', 0, $transportException);
         }
 
         $statusCode = $response->getStatusCode();

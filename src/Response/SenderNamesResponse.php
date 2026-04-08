@@ -18,12 +18,12 @@ final class SenderNamesResponse extends AbstractResponse
      */
     public function __construct(
         bool $success,
-        ?ApiError $error,
+        ?ApiError $apiError,
         array $raw,
         private readonly array $sms,
         private readonly array $viber,
     ) {
-        parent::__construct($success, $error, $raw);
+        parent::__construct($success, $apiError, $raw);
     }
 
     /**
@@ -36,9 +36,14 @@ final class SenderNamesResponse extends AbstractResponse
 
         $sms = [];
         foreach (($data['sms'] ?? []) as $item) {
-            if (!\is_array($item) || !isset($item['sender'])) {
+            if (!\is_array($item)) {
                 continue;
             }
+
+            if (!isset($item['sender'])) {
+                continue;
+            }
+
             $sms[] = new SmsSenderName(
                 (string) $item['sender'],
                 (bool) ($item['is_default'] ?? false),
@@ -47,15 +52,24 @@ final class SenderNamesResponse extends AbstractResponse
 
         $viber = [];
         foreach (($data['viber'] ?? []) as $item) {
-            if (!\is_array($item) || !isset($item['sender'])) {
+            if (!\is_array($item)) {
+                continue;
+            }
+
+            if (!isset($item['sender'])) {
                 continue;
             }
 
             $templates = [];
             foreach (($item['templates'] ?? []) as $template) {
-                if (!\is_array($template) || !isset($template['text'])) {
+                if (!\is_array($template)) {
                     continue;
                 }
+
+                if (!isset($template['text'])) {
+                    continue;
+                }
+
                 $templates[] = new ViberTemplate(
                     (string) $template['text'],
                     (bool) ($template['active'] ?? false),

@@ -13,7 +13,7 @@ final class SmsSendResponse extends AbstractResponse
      */
     public function __construct(
         bool $success,
-        ?ApiError $error,
+        ?ApiError $apiError,
         array $raw,
         private readonly ?int $messageId,
         private readonly ?float $pricePerPart,
@@ -21,7 +21,7 @@ final class SmsSendResponse extends AbstractResponse
         private readonly ?float $amount,
         private readonly ?string $customId,
     ) {
-        parent::__construct($success, $error, $raw);
+        parent::__construct($success, $apiError, $raw);
     }
 
     /**

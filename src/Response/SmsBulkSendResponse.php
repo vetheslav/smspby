@@ -14,11 +14,11 @@ final class SmsBulkSendResponse extends AbstractResponse
      */
     public function __construct(
         bool $success,
-        ?ApiError $error,
+        ?ApiError $apiError,
         array $raw,
         private readonly array $messages,
     ) {
-        parent::__construct($success, $error, $raw);
+        parent::__construct($success, $apiError, $raw);
     }
 
     /**
@@ -34,6 +34,7 @@ final class SmsBulkSendResponse extends AbstractResponse
             if (!\is_array($item)) {
                 continue;
             }
+            
             $item['status'] = true;
             $messages[] = SmsSendResponse::fromArray($item);
         }

@@ -13,13 +13,17 @@ use Vetheslav\SmspBy\Api\ViberApi;
 use Vetheslav\SmspBy\Config\Credentials;
 use Vetheslav\SmspBy\Http\RequestSender;
 
-final class SmspByClient
+final readonly class SmspByClient
 {
-    private readonly RequestSender $sender;
-    private readonly SmsApi $smsApi;
-    private readonly ViberApi $viberApi;
-    private readonly UserApi $userApi;
-    private readonly TemplateApi $templateApi;
+    private RequestSender $requestSender;
+    
+    private SmsApi $smsApi;
+    
+    private ViberApi $viberApi;
+    
+    private UserApi $userApi;
+    
+    private TemplateApi $templateApi;
 
     /**
      * Creates a new client instance configured with credentials and HTTP transport.
@@ -30,11 +34,11 @@ final class SmspByClient
         ?LoggerInterface $logger = null,
         string $baseUri = 'https://cabinet.smsp.by/api/',
     ) {
-        $this->sender = new RequestSender($httpClient, $credentials, $baseUri, $logger);
-        $this->smsApi = new SmsApi($this->sender);
-        $this->viberApi = new ViberApi($this->sender);
-        $this->userApi = new UserApi($this->sender);
-        $this->templateApi = new TemplateApi($this->sender);
+        $this->requestSender = new RequestSender($httpClient, $credentials, $baseUri, $logger);
+        $this->smsApi = new SmsApi($this->requestSender);
+        $this->viberApi = new ViberApi($this->requestSender);
+        $this->userApi = new UserApi($this->requestSender);
+        $this->templateApi = new TemplateApi($this->requestSender);
     }
 
     /**

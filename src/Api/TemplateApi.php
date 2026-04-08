@@ -9,12 +9,12 @@ use Vetheslav\SmspBy\Response\SimpleResponse;
 use Vetheslav\SmspBy\Response\TemplateCreateResponse;
 use Vetheslav\SmspBy\Response\TemplateListResponse;
 
-final class TemplateApi
+final readonly class TemplateApi
 {
     /**
      * Creates a templates API wrapper using the shared request sender.
      */
-    public function __construct(private readonly RequestSender $sender)
+    public function __construct(private RequestSender $requestSender)
     {
     }
 
@@ -26,7 +26,7 @@ final class TemplateApi
         $this->assertNonEmpty($name, 'name');
         $this->assertNonEmpty($text, 'text');
 
-        $data = $this->sender->post('templateCreate/sms', [
+        $data = $this->requestSender->post('templateCreate/sms', [
             'name' => $name,
             'text' => $text,
         ]);
@@ -45,11 +45,12 @@ final class TemplateApi
         if ($name !== null) {
             $payload['name'] = $name;
         }
+        
         if ($text !== null) {
             $payload['text'] = $text;
         }
 
-        $data = $this->sender->post('templateUpdate/sms', $payload);
+        $data = $this->requestSender->post('templateUpdate/sms', $payload);
 
         return SimpleResponse::fromArray($data);
     }
@@ -59,7 +60,7 @@ final class TemplateApi
      */
     public function deleteSms(int $templateId): SimpleResponse
     {
-        $data = $this->sender->post('templateDelete/sms', [
+        $data = $this->requestSender->post('templateDelete/sms', [
             'template_id' => $templateId,
         ]);
 
@@ -71,7 +72,7 @@ final class TemplateApi
      */
     public function listSms(): TemplateListResponse
     {
-        $data = $this->sender->post('templateList/sms', []);
+        $data = $this->requestSender->post('templateList/sms', []);
 
         return TemplateListResponse::fromArray($data);
     }
@@ -84,7 +85,7 @@ final class TemplateApi
         $this->assertNonEmpty($name, 'name');
         $this->assertNonEmpty($text, 'text');
 
-        $data = $this->sender->post('templateCreate/viber', [
+        $data = $this->requestSender->post('templateCreate/viber', [
             'name' => $name,
             'text' => $text,
         ]);
@@ -103,11 +104,12 @@ final class TemplateApi
         if ($name !== null) {
             $payload['name'] = $name;
         }
+        
         if ($text !== null) {
             $payload['text'] = $text;
         }
 
-        $data = $this->sender->post('templateUpdate/viber', $payload);
+        $data = $this->requestSender->post('templateUpdate/viber', $payload);
 
         return SimpleResponse::fromArray($data);
     }
@@ -117,7 +119,7 @@ final class TemplateApi
      */
     public function deleteViber(int $templateId): SimpleResponse
     {
-        $data = $this->sender->post('templateDelete/viber', [
+        $data = $this->requestSender->post('templateDelete/viber', [
             'template_id' => $templateId,
         ]);
 
@@ -129,7 +131,7 @@ final class TemplateApi
      */
     public function listViber(): TemplateListResponse
     {
-        $data = $this->sender->post('templateList/viber', []);
+        $data = $this->requestSender->post('templateList/viber', []);
 
         return TemplateListResponse::fromArray($data);
     }

@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Vetheslav\SmspBy\ValueObject;
 
-final class ViberCostItem
+final readonly class ViberCostItem
 {
     /**
      * Creates a cost item for a Viber message.
      */
     public function __construct(
-        private readonly string $msisdn,
-        private readonly ?float $price,
+        private string $msisdn,
+        private ?float $price,
     ) {
     }
 

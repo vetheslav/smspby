@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Vetheslav\SmspBy\ValueObject;
 
-final class GatewayStatus
+final readonly class GatewayStatus
 {
     /**
      * Creates a gateway status wrapper with the raw API code and name.
      */
     public function __construct(
-        private readonly int|false|null $code,
-        private readonly ?string $name,
+        private int|false|null $code,
+        private ?string $name,
     ) {
     }
 
@@ -48,7 +48,7 @@ final class GatewayStatus
             return null;
         }
 
-        return SmsMessageStatus::tryFrom((int) $this->code);
+        return SmsMessageStatus::tryFrom($this->code);
     }
 
     /**
@@ -60,6 +60,6 @@ final class GatewayStatus
             return null;
         }
 
-        return ViberMessageStatus::tryFrom((int) $this->code);
+        return ViberMessageStatus::tryFrom($this->code);
     }
 }

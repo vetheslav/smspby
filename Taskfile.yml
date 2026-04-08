@@ -1,0 +1,76 @@
+version: '3'
+
+silent: true
+
+dotenv: ['.env']
+
+tasks:
+  init:
+    desc: Инициализация
+    cmds:
+      - task: build
+      - task: down
+      - task: up
+      - task: composer:install
+
+  build:
+    desc: Сборка контейнеров
+    cmd: docker compose -f compose.dev.yaml build --build-arg UID=${BUILD_ARG_UID:-$(id -u)} --build-arg GID=${BUILD_ARG_GID:-$(id -g)}
+
+  shell:
+    desc: Запуск терминала
+    cmds:
+      - task: up
+      - docker compose -f compose.dev.yaml exec php sh
+
+  up:
+    desc: Запуск контейнеров
+    cmd: docker compose -f compose.dev.yaml up -d
+    status:
+      - docker compose -f compose.dev.yaml exec php echo "test"
+
+  down:
+    desc: Остановка контейнеров
+    cmd: docker compose -f compose.dev.yaml down --remove-orphans
+
+  composer:install:
+    desc: Запуск composer install
+    cmds:
+      - task: up
+      - docker compose -f compose.dev.yaml exec php composer install
+
+  composer:update:
+    desc: Запуск composer update
+    cmds:
+      - task: up
+      - docker compose -f compose.dev.yaml exec php composer update
+
+  test:
+    desc: Запуск тестов
+    cmds:
+      - task: up
+      - docker compose -f compose.dev.yaml exec php ./vendor/bin/phpunit tests {{.CLI_ARGS}}
+
+  stan:
+    desc: Запуск phpstan
+    cmds:
+      - task: up
+      - docker compose -f compose.dev.yaml exec php php -d memory_limit=1G ./vendor/bin/phpstan analyse src
+
+  rector:
+    desc: Запуск rector
+    cmds:
+      - task: up
+      - docker compose -f compose.dev.yaml exec php ./vendor/bin/rector
+
+  semgrep:
+    desc: Запуск semgrep
+    cmd: docker run --rm -v "${PWD}:/src" semgrep/semgrep semgrep scan --error
+
+  prep:
+    desc: Подготовка перед коммитом
+    cmds:
+      - task: stan
+      - task: rector
+      - task: semgrep
+      - task: test

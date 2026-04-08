@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Vetheslav\SmspBy\Model;
 
-final class ApiError
+final readonly class ApiError
 {
     /**
      * Creates a structured API error instance.
      */
     public function __construct(
-        private readonly ?int $code,
-        private readonly string $description,
-        private readonly array $raw,
+        private ?int $code,
+        private string $description,
+        private array $raw,
     ) {
         if ($this->description === '') {
             throw new \InvalidArgumentException('Error description must be a non-empty string.');

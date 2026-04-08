@@ -14,21 +14,21 @@ use Vetheslav\SmspBy\Response\StatusResponse;
 use Vetheslav\SmspBy\ValueObject\SmsCostMessage;
 use Vetheslav\SmspBy\ValueObject\SmsMessage;
 
-final class SmsApi
+final readonly class SmsApi
 {
     /**
      * Creates an SMS API wrapper using the shared request sender.
      */
-    public function __construct(private readonly RequestSender $sender)
+    public function __construct(private RequestSender $requestSender)
     {
     }
 
     /**
      * Sends a single SMS message and returns the delivery metadata.
      */
-    public function send(SmsMessage $message): SmsSendResponse
+    public function send(SmsMessage $smsMessage): SmsSendResponse
     {
-        $data = $this->sender->post('send/sms', $message->toSendArray());
+        $data = $this->requestSender->post('send/sms', $smsMessage->toSendArray());
 
         return SmsSendResponse::fromArray($data);
     }
@@ -44,10 +44,11 @@ final class SmsApi
             if (!$message instanceof SmsMessage) {
                 throw new \InvalidArgumentException('Each message must be an instance of SmsMessage.');
             }
+            
             $payload[] = $message->toBulkArray();
         }
 
-        $data = $this->sender->post('sendBulk/sms', [
+        $data = $this->requestSender->post('sendBulk/sms', [
             'messages' => ApiHelpers::encodeMessages($payload),
         ]);
 
@@ -57,9 +58,9 @@ final class SmsApi
     /**
      * Calculates the cost of a single SMS without sending it.
      */
-    public function cost(SmsCostMessage $message): SmsCostResponse
+    public function cost(SmsCostMessage $smsCostMessage): SmsCostResponse
     {
-        $data = $this->sender->post('cost/sms', $message->toArray());
+        $data = $this->requestSender->post('cost/sms', $smsCostMessage->toArray());
 
         return SmsCostResponse::fromArray($data);
     }
@@ -75,10 +76,11 @@ final class SmsApi
             if (!$message instanceof SmsCostMessage) {
                 throw new \InvalidArgumentException('Each message must be an instance of SmsCostMessage.');
             }
+            
             $payload[] = $message->toArray();
         }
 
-        $data = $this->sender->post('costBulk/sms', [
+        $data = $this->requestSender->post('costBulk/sms', [
             'messages' => ApiHelpers::encodeMessages($payload),
         ]);
 
@@ -90,7 +92,7 @@ final class SmsApi
      */
     public function statusById(int|string $messageId): StatusResponse
     {
-        $data = $this->sender->post('status/sms', [
+        $data = $this->requestSender->post('status/sms', [
             'message_id' => (string) $messageId,
         ]);
 
@@ -103,7 +105,7 @@ final class SmsApi
      */
     public function statusBulkById(array $messageIds): StatusBulkResponse
     {
-        $data = $this->sender->post('statusBulk/sms', [
+        $data = $this->requestSender->post('statusBulk/sms', [
             'message_ids' => ApiHelpers::joinIds($messageIds),
         ]);
 
@@ -117,7 +119,7 @@ final class SmsApi
     {
         $this->assertCustomId($customId);
 
-        $data = $this->sender->post('statusCustom/sms', [
+        $data = $this->requestSender->post('statusCustom/sms', [
             'custom_id' => $customId,
         ]);
 
@@ -134,7 +136,7 @@ final class SmsApi
             $this->assertCustomId((string) $customId);
         }
 
-        $data = $this->sender->post('statusCustomBulk/sms', [
+        $data = $this->requestSender->post('statusCustomBulk/sms', [
             'message_ids' => ApiHelpers::joinIds($customIds),
         ]);
 
@@ -146,6 +148,7 @@ final class SmsApi
         if ($customId === '') {
             throw new \InvalidArgumentException('custom_id must be a non-empty string.');
         }
+        
         if (mb_strlen($customId) > 20) {
             throw new \InvalidArgumentException('custom_id must be 20 characters or less.');
         }

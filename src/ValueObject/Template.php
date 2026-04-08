@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Vetheslav\SmspBy\ValueObject;
 
-final class Template
+final readonly class Template
 {
     /**
      * Creates a template value object.
      */
     public function __construct(
-        private readonly int $templateId,
-        private readonly string $name,
-        private readonly string $text,
+        private int $templateId,
+        private string $name,
+        private string $text,
     ) {
     }
 
